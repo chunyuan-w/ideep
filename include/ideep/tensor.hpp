@@ -387,6 +387,11 @@ class tensor : public memory {
       return ret;
     }
 
+    // Expose it since we need to serialize the opaque tensor
+    dim g() const {
+      return groups;
+    }
+
    private:
     /// Returns dimension vector
     inline dims get_internal_dims() const {
@@ -410,10 +415,6 @@ class tensor : public memory {
 
     void set_g(dim groups) {
       this->groups = groups;
-    }
-
-    dim g() const {
-      return groups;
     }
 
     inline bool is_grouped() const {
