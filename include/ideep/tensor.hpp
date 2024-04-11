@@ -392,6 +392,13 @@ class tensor : public memory {
       return groups;
     }
 
+    // Returns a binary blob associated with the given memory descriptor
+    // API available since oneDNN v3.4.1
+    std::vector<uint8_t> get_blob() {
+      std::vector<uint8_t> out_blob = memory::desc::get_blob();
+      return out_blob;
+    }
+
    private:
     /// Returns dimension vector
     inline dims get_internal_dims() const {
