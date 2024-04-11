@@ -56,6 +56,11 @@ class tensor : public memory {
       set_g(1);
     }
 
+    // Construct a memory descriptor from a binary blob.
+    // The API is available since oneDNN v3.4.1
+    desc(const std::vector<uint8_t> &blob) : memory::desc(blob) {
+    }
+
     void to_bytes(utils::bytestring& bytes) const {
       utils::to_bytes(bytes, get_data_type());
       utils::to_bytes(bytes, format_kind());
