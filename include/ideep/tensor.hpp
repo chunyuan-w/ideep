@@ -396,11 +396,6 @@ class tensor : public memory {
       return ret;
     }
 
-    // Expose it since we need to serialize the opaque tensor
-    dim g() const {
-      return groups;
-    }
-
     // Returns a binary blob associated with the given memory descriptor
     // API available since oneDNN v3.4.1
     std::vector<uint8_t> get_blob() {
@@ -436,6 +431,10 @@ class tensor : public memory {
 
     void set_g(dim groups) {
       this->groups = groups;
+    }
+
+    dim g() const {
+      return groups;
     }
 
     inline bool is_grouped() const {
