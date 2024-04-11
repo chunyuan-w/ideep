@@ -58,7 +58,7 @@ class tensor : public memory {
 
     // Construct a memory descriptor from a binary blob.
     // The API is available since oneDNN v3.4.1
-    desc(const std::vector<uint8_t> &blob) : memory::desc(blob) {
+    desc(const std::vector<uint8_t> &blob) : memory::desc(get_dnnl_blob(blob)) {
     }
 
     void to_bytes(utils::bytestring& bytes) const {
@@ -401,6 +401,13 @@ class tensor : public memory {
     // API available since oneDNN v3.4.1
     std::vector<uint8_t> get_blob() {
       std::vector<uint8_t> out_blob = memory::desc::get_blob();
+      
+      int groups = g();
+      printf("groups: %d\n", groups);
+      printf("nbytes of the groups: %ld\n", sizeof(int));
+      // TODO: will sizeof(int) be different during serialize and deserialize?
+      out_blob.insert(out_blob.end(), (uint8_t*)&groups, (uint8_t*)&groups + sizeof(int));
+      
       return out_blob;
     }
 
@@ -431,6 +438,12 @@ class tensor : public memory {
 
     inline bool is_grouped() const {
       return g() > 1;
+    }
+
+    std::vector<uint8_t> get_dnnl_blob(const std::vector<uint8_t> &blob) {
+      // TODO: will sizeof(int) be different during serialize and deserialize?
+      std::vector<uint8_t> dnnl_blob(blob.begin(), blob.end() - sizeof(int));
+      return dnnl_blob;
     }
 
     int groups = 1;
