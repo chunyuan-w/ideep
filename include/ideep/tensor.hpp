@@ -60,7 +60,7 @@ class tensor : public memory {
     // The API is available since oneDNN v3.4.1
     desc(const std::vector<uint8_t> &blob) : memory::desc(get_dnnl_blob(blob)) {
       // The groups is serialized into the last sizeof(int) item
-      // TODO: only little endian is supported here.
+      // We use little endian encoding here for the groups_bytes
       std::vector<uint8_t> groups_bytes(blob.end() - sizeof(int), blob.end());
       int groups = *reinterpret_cast<int*>(groups_bytes.data());
       set_g(groups);
@@ -413,7 +413,7 @@ class tensor : public memory {
       // while FWK still needs it to be a 4D tensor.
       // ideep desc will wrap the 5D oneDNN md back to a 4D ideep desc
       // when interacting with the FWK.
-      // TODO: only little endian is supported here.
+      // We use little endian encoding here when serializing groups
       out_blob.insert(out_blob.end(), (uint8_t*)&groups, (uint8_t*)&groups + sizeof(int));
       
       return out_blob;
